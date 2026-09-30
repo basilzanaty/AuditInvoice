@@ -1,0 +1,10 @@
+{
+  "companyName": "ALMODAKEK",
+  "defaultTaxRate": 14,
+  "currency": "EGP",
+  "auditStrictness": "medium",
+  "enableDuplicateCheck": true,
+  "enableVatFormatCheck": true,
+  "enableMathVerification": true,
+  "geminiApiKey": ""
+}

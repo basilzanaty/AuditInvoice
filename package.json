@@ -1,0 +1,20 @@
+{
+  "name": "docuaudit-ai",
+  "version": "1.0.0",
+  "description": "DocuAudit AI - B2B AI Invoice & Accounting Document Auditor",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "ai",
+    "invoice-scanner",
+    "accounting",
+    "audit",
+    "vat",
+    "b2b",
+    "saas"
+  ],
+  "author": "DocuAudit AI Team",
+  "license": "MIT"
+}

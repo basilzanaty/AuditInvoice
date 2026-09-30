@@ -1,0 +1,58 @@
+[
+  {
+    "invoiceNumber": "INV-694404",
+    "vendorName": "شركة التوريدات الرقمية المتقدمة",
+    "vendorVatNumber": "310492817200003",
+    "customerName": "مؤسسة الحلول الذكية للتجارة",
+    "customerVatNumber": "300192837400003",
+    "issueDate": "2026-09-30",
+    "dueDate": "2026-10-15",
+    "currency": "USD",
+    "items": [
+      {
+        "description": "اشتراك خدمات البنية التحتية والمخدمات السحابية",
+        "quantity": 1,
+        "unitPrice": 2800,
+        "total": 2800
+      },
+      {
+        "description": "ترخيص برمجيات الحماية وإدارة البيانات المؤسسية",
+        "quantity": 3,
+        "unitPrice": 450,
+        "total": 1350
+      },
+      {
+        "description": "استشارات تقنية ودعم فني وتدقيق فصلي",
+        "quantity": 1,
+        "unitPrice": 1200,
+        "total": 1200
+      }
+    ],
+    "subtotal": 5350,
+    "taxRate": 15,
+    "taxAmount": 802.5,
+    "grandTotal": 6152.5,
+    "paymentMethod": "تحويل بنكي سداد",
+    "id": "INV-2026-001",
+    "createdAt": "2026-09-30T12:47:54.890Z",
+    "auditResults": {
+      "hasErrors": false,
+      "score": 100,
+      "flags": [
+        {
+          "type": "success",
+          "message": "مجموع بنود الفاتورة مطابق تماماً للمجموع الفرعي"
+        },
+        {
+          "type": "success",
+          "message": "الضريبة محسوبة بدقة (15%) ومتوافقة مع المعايير المحاسبية"
+        },
+        {
+          "type": "success",
+          "message": "الرقم الضريبي للمورد يحقق معايير هيئة الزكاة والضريبة والجمارك (15 رقماً يبدأ وينتهي بـ 3)"
+        }
+      ]
+    },
+    "status": "verified"
+  }
+]

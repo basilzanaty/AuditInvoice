@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AuditInvoice | المساعد الذكي لتدقيق وأرشفة الفواتير الضريبية</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Top Header Navigation -->
+  <header class="top-header">
+    <div class="brand-section">
+      <div class="logo-badge">⚡</div>
+      <div class="brand-title">
+        <h1>AuditInvoice </h1>
+        <p>نظام تدقيق الفواتير والمستندات المحاسبية بالذكاء الاصطناعي (B2B SaaS)</p>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs" id="navTabs">
+      <button class="tab-btn active" data-tab="dashboard">
+        📊 لوحة المؤشرات
+      </button>
+      <button class="tab-btn" data-tab="scanner">
+        🔍 الفحص والتدقيق الذكي
+      </button>
+      <button class="tab-btn" data-tab="invoices">
+        📁 سجل الفواتير (<span id="invoicesBadgeCount">0</span>)
+      </button>
+      <button class="tab-btn" data-tab="sales">
+        💰 تسويق وبيع التطبيق
+      </button>
+      <button class="tab-btn" data-tab="settings">
+        ⚙️ الإعدادات
+      </button>
+    </nav>
+
+    <!-- Header Actions -->
+    <div class="header-actions">
+      <button class="action-pill-btn" onclick="switchTab('scanner')">
+        <span>+</span> رفع فاتورة جديدة
+      </button>
+      <button class="action-pill-btn secondary" onclick="exportCsv()">
+        📥 تصدير Excel
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content Wrapper -->
+  <main class="main-wrapper">
+
+    <!-- TAB 1: DASHBOARD -->
+    <section id="tab-dashboard" class="tab-content active">
+      <!-- Welcome CTA Banner -->
+      <div class="dashboard-cta-banner">
+        <div class="banner-content">
+          <h2>مرحباً بك في DocuAudit AI</h2>
+          <p>حل مؤسسي متكامل لأتمتة استخراج وتدقيق الفواتير الضريبية، واكتشاف الأخطاء الحسابية، ومنع الازدواج الضريبي وتكرار الفواتير في ثوانٍ معدودة.</p>
+        </div>
+        <div class="banner-actions">
+          <button class="btn-white" onclick="switchTab('scanner')">ابدأ فحص فاتورة تجريبية الآن</button>
+          <button class="btn-white" style="background: rgba(255,255,255,0.2); color: white;" onclick="switchTab('sales')">كيف تبيع هذا التطبيق لعملاء؟</button>
+        </div>
+      </div>
+
+      <!-- Metrics KPI Cards -->
+      <div class="metrics-grid">
+        <div class="metric-card" style="--card-color: #2563eb; --card-light: #eff6ff;">
+          <div class="metric-info">
+            <h3>إجمالي الفواتير المفحوصة</h3>
+            <div class="value" id="kpiTotalInvoices">0</div>
+            <div class="sub-desc">مستند مفهرس ومؤرشف في النظام</div>
+          </div>
+          <div class="metric-icon">📑</div>
+        </div>
+
+        <div class="metric-card" style="--card-color: #10b981; --card-light: #ecfdf5;">
+          <div class="metric-info">
+            <h3>فواتير سليمة ومطابقة 100%</h3>
+            <div class="value" id="kpiVerifiedInvoices">0</div>
+            <div class="sub-desc">خالية من أي أخطاء حسابية أو ضريبية</div>
+          </div>
+          <div class="metric-icon">✅</div>
+        </div>
+
+        <div class="metric-card" style="--card-color: #f59e0b; --card-light: #fffbeb;">
+          <div class="metric-info">
+            <h3>تنبيهات تدقيق واشتباه</h3>
+            <div class="value" id="kpiFlaggedInvoices">0</div>
+            <div class="sub-desc">اكتشفها نظام التدقيق التلقائي</div>
+          </div>
+          <div class="metric-icon">⚠️</div>
+        </div>
+
+        <div class="metric-card" style="--card-color: #8b5cf6; --card-light: #f5f3ff;">
+          <div class="metric-info">
+            <h3>إجمالي المبالغ المدققة (SAR)</h3>
+            <div class="value" id="kpiTotalAmount">0.00</div>
+            <div class="sub-desc">تشمل ضريبة القيمة المضافة</div>
+          </div>
+          <div class="metric-icon">💳</div>
+        </div>
+      </div>
+
+      <!-- Quick Recent Table Card -->
+      <div class="content-card">
+        <div class="card-header">
+          <h3>آخر المستندات والفواتير المفحوصة</h3>
+          <button class="sample-btn" onclick="switchTab('invoices')">عرض كافة الفواتير ←</button>
+        </div>
+        <div class="card-body">
+          <div class="data-table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>المعرف</th>
+                  <th>رقم الفاتورة</th>
+                  <th>المورد</th>
+                  <th>تاريخ الإصدار</th>
+                  <th>المبلغ الإجمالي</th>
+                  <th>حالة التدقيق</th>
+                  <th>الإجراء</th>
+                </tr>
+              </thead>
+              <tbody id="dashboardRecentInvoices">
+                <!-- Dynamically Populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: SMART SCANNER & OCR INSPECTOR -->
+    <section id="tab-scanner" class="tab-content">
+      <div class="content-card">
+        <div class="card-header">
+          <h3>مسح وتدقيق مستند أو فاتورة جديدة</h3>
+          <span class="badge badge-success">جاهز للفحص بالذكاء الاصطناعي</span>
+        </div>
+        <div class="card-body">
+          <!-- Dropzone -->
+          <div class="upload-dropzone" id="dropZone" onclick="triggerFileInput()">
+            <input type="file" id="fileInput" class="hidden-file-input" accept="image/*,.pdf" onchange="handleFileSelected(event)">
+            <div class="upload-icon">📄</div>
+            <h4>اسحب وأفلت الفاتورة أو الإيصال هنا (PDF أو صورة)</h4>
+            <p>أو اضغط لاختيار ملف من جهازك - يدعم الفواتير الضريبية، إيصالات المشتريات، وأوامر الشراء</p>
+          </div>
+
+          <!-- Sample Invoices Bar for 1-Click Demo -->
+          <div class="sample-bar">
+            <div class="sample-bar-title">
+              💡 <span>لتجربة فورية بضغطة زر (نماذج فواتير واقعية مسبقة التجهيز):</span>
+            </div>
+            <div class="samples-list" id="sampleButtonsList">
+              <!-- Dynamically rendered sample buttons -->
+            </div>
+          </div>
+
+          <!-- Live Scanning Visualizer -->
+          <div class="scan-progress-box" id="scanProgressBox">
+            <div class="progress-steps">
+              <div class="step-item" id="step1">
+                <div class="step-circle">1</div>
+                <span>قراءة المستند</span>
+              </div>
+              <div class="step-item" id="step2">
+                <div class="step-circle">2</div>
+                <span>استخراج النصوص والبيانات</span>
+              </div>
+              <div class="step-item" id="step3">
+                <div class="step-circle">3</div>
+                <span>التحقق الضريبي والحسابي</span>
+              </div>
+              <div class="step-item" id="step4">
+                <div class="step-circle">4</div>
+                <span>اكتشاف التكرار والشذوذ</span>
+              </div>
+            </div>
+            <div class="progress-bar-container">
+              <div class="progress-bar-fill" id="progressBarFill"></div>
+            </div>
+            <p id="scanStatusText" style="text-align: center; margin-top: 0.75rem; font-size: 0.85rem; color: var(--text-muted);">
+              جاري فحص المستند...
+            </p>
+          </div>
+
+          <!-- Split Inspector & Editor Pane -->
+          <div class="inspector-grid" id="inspectorContainer" style="display: none;">
+            <!-- Left: Document Preview -->
+            <div class="preview-pane">
+              <div class="document-mockup">
+                <div class="mockup-header">
+                  <div>
+                    <span class="mockup-title" id="mockVendorName">اسم المورد</span>
+                    <p style="font-size: 0.8rem; color: var(--text-muted);" id="mockVendorVat">الرقم الضريبي: -</p>
+                  </div>
+                  <div style="text-align: left;">
+                    <div style="font-weight: 800; font-size: 1.1rem;" id="mockInvoiceNumber">SA-0000</div>
+                    <span class="badge badge-success" id="mockStatusBadge">مطابق</span>
+                  </div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; margin-bottom: 1rem; font-size: 0.85rem;">
+                  <div>
+                    <strong>العميل:</strong> <span id="mockCustomerName">-</span><br>
+                    <strong>الرقم الضريبي للعميل:</strong> <span id="mockCustomerVat">-</span>
+                  </div>
+                  <div style="text-align: left;">
+                    <strong>تاريخ الفاتورة:</strong> <span id="mockIssueDate">-</span><br>
+                    <strong>تاريخ الاستحقاق:</strong> <span id="mockDueDate">-</span>
+                  </div>
+                </div>
+
+                <table class="items-table">
+                  <thead>
+                    <tr>
+                      <th>الوصف</th>
+                      <th>الكمية</th>
+                      <th>سعر الوحدة</th>
+                      <th>الإجمالي</th>
+                    </tr>
+                  </thead>
+                  <tbody id="mockItemsBody">
+                    <!-- Populated dynamically -->
+                  </tbody>
+                </table>
+
+                <div style="margin-top: 1.5rem; border-top: 2px solid #e2e8f0; padding-top: 1rem; display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.9rem;">
+                  <div style="display: flex; justify-content: space-between;">
+                    <span>المجموع الفرعي:</span>
+                    <strong id="mockSubtotal">0.00</strong>
+                  </div>
+                  <div style="display: flex; justify-content: space-between;">
+                    <span>ضريبة القيمة المضافة (<span id="mockTaxRate">15</span>%):</span>
+                    <strong id="mockTaxAmount">0.00</strong>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; font-size: 1.15rem; color: var(--primary); border-top: 1px dashed #cbd5e1; padding-top: 0.5rem;">
+                    <span>الإجمالي المستحق:</span>
+                    <strong id="mockGrandTotal">0.00</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Editable Form & Audit Results -->
+            <div class="editor-pane">
+              <!-- Audit Results Box -->
+              <div class="audit-flags-box" id="auditFlagsBox">
+                <div class="audit-flags-header">
+                  <h4 style="font-weight: 700; font-size: 0.95rem;">تقرير التدقيق والفحص الآلي</h4>
+                  <div id="auditScoreBadge" class="badge badge-success">نقاط المطابقة: 100%</div>
+                </div>
+                <div class="flags-list" id="auditFlagsList">
+                  <!-- Dynamically populated flags -->
+                </div>
+              </div>
+
+              <!-- Editable Form -->
+              <h4 style="font-weight: 700; margin-bottom: 1rem; font-size: 0.95rem;">تعديل وتأكيد بيانات الفاتورة:</h4>
+              <form id="invoiceEditForm" onsubmit="saveCurrentInvoice(event)">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>رقم الفاتورة</label>
+                    <input type="text" id="editInvoiceNumber" class="form-control" required oninput="recalculateInvoice()">
+                  </div>
+                  <div class="form-group">
+                    <label>العملة</label>
+                    <select id="editCurrency" class="form-control" onchange="recalculateInvoice()">
+                      <option value="SAR">ريال سعودي (SAR)</option>
+                      <option value="AED">درهم إماراتي (AED)</option>
+                      <option value="EGP">جنيه مصري (EGP)</option>
+                      <option value="USD">دولار أمريكي (USD)</option>
+                      <option value="EUR">يورو (EUR)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>اسم المورد / الشركة المصدرة</label>
+                    <input type="text" id="editVendorName" class="form-control" required oninput="recalculateInvoice()">
+                  </div>
+                  <div class="form-group">
+                    <label>الرقم الضريبي للمورد</label>
+                    <input type="text" id="editVendorVat" class="form-control" oninput="recalculateInvoice()">
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>اسم العميل / المشتري</label>
+                    <input type="text" id="editCustomerName" class="form-control" oninput="recalculateInvoice()">
+                  </div>
+                  <div class="form-group">
+                    <label>تاريخ الفاتورة</label>
+                    <input type="date" id="editIssueDate" class="form-control" oninput="recalculateInvoice()">
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>المجموع الفرعي (قبل الضريبة)</label>
+                    <input type="number" step="0.01" id="editSubtotal" class="form-control" required oninput="recalculateInvoice()">
+                  </div>
+                  <div class="form-group">
+                    <label>نسبة الضريبة (%)</label>
+                    <input type="number" step="0.1" id="editTaxRate" class="form-control" required oninput="recalculateInvoice()">
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>مبلغ الضريبة المسجل</label>
+                    <input type="number" step="0.01" id="editTaxAmount" class="form-control" required oninput="recalculateInvoice()">
+                  </div>
+                  <div class="form-group">
+                    <label>الإجمالي النهائي المسجل</label>
+                    <input type="number" step="0.01" id="editGrandTotal" class="form-control" required oninput="recalculateInvoice()">
+                  </div>
+                </div>
+
+                <div style="display: flex; gap: 0.75rem; margin-top: 1.5rem;">
+                  <button type="submit" class="action-pill-btn" style="flex: 2; justify-content: center;">
+                    💾 حفظ الفاتورة وتثبيتها في الأرشيف
+                  </button>
+                  <button type="button" class="action-pill-btn secondary" style="flex: 1; justify-content: center;" onclick="copyAccountingEntry()">
+                    📋 نسخ القيد المحاسبي
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: INVOICES ARCHIVE & REPORTS -->
+    <section id="tab-invoices" class="tab-content">
+      <div class="content-card">
+        <div class="card-header">
+          <h3>سجل وأرشيف الفواتير المدققة</h3>
+          <button class="action-pill-btn secondary" onclick="exportCsv()">
+            📥 تنزيل تقرير Excel كامل
+          </button>
+        </div>
+        <div class="card-body">
+          <!-- Filter & Search Bar -->
+          <div class="table-filter-bar">
+            <div class="search-box">
+              <span>🔍</span>
+              <input type="text" id="searchInput" placeholder="بحث برقم الفاتورة، اسم المورد، أو العميل..." oninput="handleSearch()">
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="sample-btn filter-btn active" data-filter="all" onclick="applyFilter('all')">الكل</button>
+              <button class="sample-btn filter-btn" data-filter="verified" onclick="applyFilter('verified')">✅ مطابقة</button>
+              <button class="sample-btn filter-btn" data-filter="warning" onclick="applyFilter('warning')">⚠️ تنبيهات</button>
+              <button class="sample-btn filter-btn" data-filter="flagged" onclick="applyFilter('flagged')">🚨 اشتباه / أخطاء</button>
+            </div>
+          </div>
+
+          <!-- Main Invoices Table -->
+          <div class="data-table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>المعرف</th>
+                  <th>رقم الفاتورة</th>
+                  <th>المورد والشركة</th>
+                  <th>الرقم الضريبي</th>
+                  <th>التاريخ</th>
+                  <th>المجموع الفرعي</th>
+                  <th>الضريبة</th>
+                  <th>الإجمالي النهائي</th>
+                  <th>التقييم والتدقيق</th>
+                  <th>الإجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="invoicesTableBody">
+                <!-- Dynamically Populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: HOW TO SELL THIS APP (BUSINESS & MONETIZATION GUIDE) -->
+    <section id="tab-sales" class="tab-content">
+      <div class="sales-hero">
+        <h2>دليل بيع التطبيق وجني الأرباح (B2B SaaS Playbook)</h2>
+        <p>التطبيقات المحاسبية وأدوات الذكاء الاصطناعي للمستندات هي أكثر فئات البرمجيات طلباً للشراء والاستحواذ في 2026. إليك كيف يمكنك بيع هذا التطبيق كاشتراكات أو بيع المشروع بالكامل!</p>
+      </div>
+
+      <!-- Pricing Plans (For SaaS subscriptions) -->
+      <h3 style="font-weight: 800; margin-bottom: 1rem;">1. نماذج باقات الاشتراك المقترحة لبيعها للشركات والمحاسبين:</h3>
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <div class="pricing-header">
+            <h4>باقة المحاسب المستقل</h4>
+            <p>مثالية للمحاسب القانوني الفرد أو المكاتب الصغيرة المستقلة</p>
+          </div>
+          <div class="pricing-price">$29 <span>/ شهرياً</span></div>
+          <ul class="features-list">
+            <li>✓ فحص حتى 150 فاتورة شهرياً</li>
+            <li>✓ التدقيق الحسابي واكتشاف الفروقات</li>
+            <li>✓ التصدير المباشر لملفات Excel</li>
+            <li>✓ دعم ضريبة القيمة المضافة (KSA/UAE/EGY)</li>
+          </ul>
+          <button class="action-pill-btn secondary" style="width: 100%; justify-content: center;">عرض نموذج الباقة</button>
+        </div>
+
+        <div class="pricing-card featured">
+          <div class="pricing-header">
+            <h4>باقة الشركات الناشئة والمتوسطة</h4>
+            <p>الأنسب لشركات التجارة، اللوجستيات، والمؤسسات الخدمية</p>
+          </div>
+          <div class="pricing-price">$79 <span>/ شهرياً</span></div>
+          <ul class="features-list">
+            <li>✓ فحص حتى 1,000 فاتورة شهرياً</li>
+            <li>✓ محرك ذكاء اصطناعي متعدد النماذج (Gemini AI)</li>
+            <li>✓ كشف الفواتير المكررة ومطابقة أوامر الشراء</li>
+            <li>✓ تقارير الإقرار الضريبي ربع السنوية</li>
+            <li>✓ ربط متعدد للعملات (SAR, AED, USD, EGP)</li>
+          </ul>
+          <button class="action-pill-btn" style="width: 100%; justify-content: center;">الباقة الموصى بها للبيع</button>
+        </div>
+
+        <div class="pricing-card">
+          <div class="pricing-header">
+            <h4>باقة مكاتب المحاسبة والشركات الكبرى</h4>
+            <p>حسابات غير محدودة مع لوحة تحكم لإدارة عدة عملاء وشركات</p>
+          </div>
+          <div class="pricing-price">$199 <span>/ شهرياً</span></div>
+          <ul class="features-list">
+            <li>✓ عدد فواتير ومستندات غير محدود</li>
+            <li>✓ أرشفة سحابية مع لوحة تحكم مركزية</li>
+            <li>✓ واجهة برمجية API للربط مع Odoo و ERP</li>
+            <li>✓ تدقيق مالي فوري ومنع الغرامات الضريبية</li>
+            <li>✓ دعم فني مخصص وخدمة العملاء VIP</li>
+          </ul>
+          <button class="action-pill-btn secondary" style="width: 100%; justify-content: center;">عرض نموذج الباقة</button>
+        </div>
+      </div>
+
+      <!-- ROI Calculator -->
+      <div class="roi-card">
+        <h3 style="font-weight: 800; margin-bottom: 0.5rem;">2. حاسبة القيمة والعائد على الاستثمار (ROI Calculator)</h3>
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.9rem;">
+          استخدم هذه الأرقام عندما تقنع أي صاحب شركة أو مكتب محاسبة بالاشتراك في تطبيقك:
+        </p>
+        <div class="roi-grid">
+          <div>
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label>عدد الفواتير التي تعالجها الشركة شهرياً:</label>
+              <input type="number" id="roiInvoicesCount" class="form-control" value="300" oninput="calculateRoi()">
+            </div>
+            <div class="form-group">
+              <label>تكلفة ساعة عمل المحاسب أو المدخل (بالدولار):</label>
+              <input type="number" id="roiHourlyRate" class="form-control" value="15" oninput="calculateRoi()">
+            </div>
+          </div>
+          <div class="roi-result">
+            <p style="font-weight: 700; color: var(--text-muted); font-size: 0.9rem;">التوفير المالي الشهري المباشر للشركة:</p>
+            <div class="saved-amount" id="roiSavedMoney">$900</div>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.5rem;">
+              يوفر التطبيق حوالي <strong id="roiSavedHours" style="color: var(--primary);">60 ساعة</strong> عمل يدوي شهرياً ويمنع الغرامات الحسابية!
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Exit Strategy: How to sell on Acquire.com or locally -->
+      <div class="exit-strategy-box">
+        <h3 style="font-weight: 800; margin-bottom: 0.5rem;">3. خطة بيع التطبيق بالكامل (Exit Strategy / الاستحواذ):</h3>
+        <p style="color: var(--text-muted); font-size: 0.92rem;">
+          إذا كان هدفك بيع المشروع بالكامل (الكود والمشروع) والحصول على مبلغ نقدي كبير دفعة واحدة:
+        </p>
+
+        <div class="steps-cards-grid">
+          <div class="step-card">
+            <div class="step-num">1</div>
+            <h4 style="font-weight: 700; margin-bottom: 0.4rem;">بيع التطبيق كـ Micro-SaaS على Acquire.com</h4>
+            <p style="font-size: 0.82rem; color: var(--text-muted);">
+              احصل على 5 إلى 15 عميلاً محلياً يدفعون اشتراكاً شهرياً (مثلاً إجمالي 500$ إلى 1,000$/شهر)، ثم اعرض المشروع على <strong>Acquire.com</strong> أو <strong>Flippa</strong>. مشاريع الـ B2B SaaS تباع عادة بـ 3x إلى 5x من الدخل السنوي (أي من 20,000$ إلى 50,000$ نقداً!).
+            </p>
+          </div>
+
+          <div class="step-card">
+            <div class="step-num">2</div>
+            <h4 style="font-weight: 700; margin-bottom: 0.4rem;">بيعه لمكتب محاسبة محلي كحل خاص (White Label)</h4>
+            <p style="font-size: 0.82rem; color: var(--text-muted);">
+              تواصل مع 10 مكاتب محاسبة قانونية في مدينتك، واعرض عليهم التطبيق باسمهم وشعارهم لتدقيق مستندات عملائهم. يمكنك بيع الترخيص الواحد بمبلغ يتراوح بين <strong>1,500$ إلى 5,000$</strong> كدفعة واحدة مع رسوم صيانة سنوية.
+            </p>
+          </div>
+
+          <div class="step-card">
+            <div class="step-num">3</div>
+            <h4 style="font-weight: 700; margin-bottom: 0.4rem;">بيعه كقالب كود سورس كامل على CodeCanyon</h4>
+            <p style="font-size: 0.82rem; color: var(--text-muted);">
+              قم ببيع الكود المصدري على <strong>CodeCanyon (Envato Market)</strong> بسعر 49$ إلى 89$ للنسخة. قوالب الذكاء الاصطناعي للفواتير تحقق مئات المبيعات شهرياً من مطورين حول العالم يريدون بناء مشاريع مماثلة لعملائهم.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: SETTINGS -->
+    <section id="tab-settings" class="tab-content">
+      <div class="content-card" style="max-width: 800px; margin: 0 auto;">
+        <div class="card-header">
+          <h3>إعدادات النظام والذكاء الاصطناعي</h3>
+        </div>
+        <div class="card-body">
+          <form id="settingsForm" onsubmit="saveSettings(event)">
+            <div class="form-group" style="margin-bottom: 1.25rem;">
+              <label>اسم الشركة أو التطبيق</label>
+              <input type="text" id="setCompanyName" class="form-control" value="DocuAudit AI Hub">
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>نسبة الضريبة الافتراضية (%)</label>
+                <select id="setDefaultTaxRate" class="form-control">
+                  <option value="15">15% (المملكة العربية السعودية ZATCA)</option>
+                  <option value="5">5% (الإمارات العربية المتحدة FTA)</option>
+                  <option value="14">14% (جمهورية مصر العربية ETA)</option>
+                  <option value="0">0% (معفاة / بدون ضريبة)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>العملة الافتراضية</label>
+                <select id="setDefaultCurrency" class="form-control">
+                  <option value="SAR">ريال سعودي (SAR)</option>
+                  <option value="AED">درهم إماراتي (AED)</option>
+                  <option value="EGP">جنيه مصري (EGP)</option>
+                  <option value="USD">دولار أمريكي (USD)</option>
+                  <option value="EUR">يورو (EUR)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1.25rem;">
+              <label>مفتاح Google Gemini API (اختياري - للفحص السحابي المباشر للصور الحقيقية)</label>
+              <input type="password" id="setGeminiApiKey" class="form-control" placeholder="AIzaSy...">
+              <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.25rem;">
+                إذا تركته فارغاً، سيعمل التطبيق تلقائياً بالمحرك الذكي المحلي المدمج (Heuristic Rule Engine) دون الحاجة للإنترنت!
+              </p>
+            </div>
+
+            <div style="margin-top: 1.5rem;">
+              <button type="submit" class="action-pill-btn" style="padding: 0.75rem 2rem;">
+                حفظ الإعدادات
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Scripts -->
+  <script src="js/samples.js"></script>
+  <script src="js/audit.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
