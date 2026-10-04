@@ -25,29 +25,40 @@ const MIME_TYPES = {
   '.csv': 'text/csv; charset=utf-8'
 };
 
+// In-memory cache to handle read-only / ephemeral serverless environments like Vercel
+const memoryCache = new Map();
+
 // Helper: Read JSON file safely
 function readJson(filePath, defaultValue = []) {
+  if (memoryCache.has(filePath)) {
+    return memoryCache.get(filePath);
+  }
   try {
     if (!fs.existsSync(filePath)) {
-      fs.writeFileSync(filePath, JSON.stringify(defaultValue, null, 2), 'utf-8');
+      try { fs.writeFileSync(filePath, JSON.stringify(defaultValue, null, 2), 'utf-8'); } catch (wErr) {}
+      memoryCache.set(filePath, defaultValue);
       return defaultValue;
     }
     const data = fs.readFileSync(filePath, 'utf-8');
-    return JSON.parse(data);
+    const parsed = JSON.parse(data);
+    memoryCache.set(filePath, parsed);
+    return parsed;
   } catch (err) {
     console.error(`Error reading ${filePath}:`, err.message);
+    memoryCache.set(filePath, defaultValue);
     return defaultValue;
   }
 }
 
 // Helper: Write JSON file safely
 function writeJson(filePath, data) {
+  memoryCache.set(filePath, data);
   try {
     fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
     return true;
   } catch (err) {
-    console.error(`Error writing ${filePath}:`, err.message);
-    return false;
+    console.warn(`Filesystem write skipped (read-only environment):`, err.message);
+    return true; // Keep in memory
   }
 }
 

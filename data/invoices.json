@@ -1,1 +1,68 @@
-[]
+[
+  {
+    "id": "INV-2026-002",
+    "invoiceNumber": "SA-99482",
+    "vendorName": "???? ??????? ????????",
+    "vendorVatNumber": "300892716300003",
+    "customerName": "????? ?????? ???????",
+    "customerVatNumber": "",
+    "issueDate": "2026-10-04",
+    "dueDate": "2026-10-04",
+    "currency": "SAR",
+    "items": [],
+    "subtotal": 6500,
+    "taxRate": 15,
+    "taxAmount": 975,
+    "grandTotal": 7475,
+    "paymentMethod": "نقدي",
+    "createdAt": "2026-10-04T17:36:50.191Z",
+    "auditResults": {
+      "hasErrors": false,
+      "score": 100,
+      "flags": [
+        {
+          "type": "success",
+          "message": "الضريبة محسوبة بدقة (15%) ومتوافقة مع المعايير المحاسبية"
+        },
+        {
+          "type": "success",
+          "message": "الرقم الضريبي للمورد يحقق معايير هيئة الزكاة والضريبة والجمارك (15 رقماً يبدأ وينتهي بـ 3)"
+        }
+      ]
+    },
+    "status": "verified"
+  },
+  {
+    "id": "INV-2026-001",
+    "invoiceNumber": "INV-TEST-001",
+    "vendorName": "???? ??????",
+    "vendorVatNumber": "300123456700003",
+    "customerName": "???? ??????",
+    "customerVatNumber": "",
+    "issueDate": "2026-10-04",
+    "dueDate": "2026-10-04",
+    "currency": "SAR",
+    "items": [],
+    "subtotal": 1000,
+    "taxRate": 15,
+    "taxAmount": 150,
+    "grandTotal": 1150,
+    "paymentMethod": "نقدي",
+    "createdAt": "2026-10-04T17:32:44.579Z",
+    "auditResults": {
+      "hasErrors": false,
+      "score": 100,
+      "flags": [
+        {
+          "type": "success",
+          "message": "الضريبة محسوبة بدقة (15%) ومتوافقة مع المعايير المحاسبية"
+        },
+        {
+          "type": "success",
+          "message": "الرقم الضريبي للمورد يحقق معايير هيئة الزكاة والضريبة والجمارك (15 رقماً يبدأ وينتهي بـ 3)"
+        }
+      ]
+    },
+    "status": "verified"
+  }
+]
